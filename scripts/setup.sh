@@ -14,10 +14,12 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 CONFIG_FILE="${CONFIG_FILE:-$PROJECT_ROOT/config.yaml}"
 
 # Auto-detect CPU cores and set intelligent defaults
-detect_cpu_cores() {
-    if command -v nproc >/dev/null 2>&1; then
+detECT_CPU_CORES() {
+    if command -v nproc >/dev/null 2>&1;
+ then
         nproc
-    elif command -v sysctl >/dev/null 2>&1; then
+    elif command -v sysctl >/dev/null 2>&1;
+ then
         sysctl -n hw.ncpu 2>/dev/null || echo "1"
     else
         echo "1"
@@ -74,7 +76,7 @@ PROGRESS_FILE=""
 SUMMARY_FILE=""
 
 # Progress indicator with ETA
-show_progress() {
+SHOW_PROGRESS() {
     local current="$1"
     local total="$2"
     local package_name="$3"
@@ -108,7 +110,7 @@ show_progress() {
 }
 
 # Format time duration
-format_duration() {
+FORMAT_DURATION() {
     local seconds=$1
     if [ "$seconds" -lt 60 ]; then
         echo "${seconds}s"
@@ -124,12 +126,12 @@ format_duration() {
 }
 
 # Check if command exists
-command_exists() {
+COMMAND_EXISTS() {
     command -v "$1" >/dev/null 2>&1
 }
 
 # Count total packages for categories being processed
-count_total_packages() {
+COUNT_TOTAL_PACKAGES() {
     local total=0
     local categories=()
     
@@ -146,7 +148,7 @@ count_total_packages() {
     for category in "${categories[@]}"; do
         # Get brew packages for this category
         local brew_packages
-        brew_packages=$(yq eval ".packages.$category.brew[] // []" "$CONFIG_FILE" 2>/dev/null | grep -v "^\[\]$" | tr -d ' ')
+        brew_packages=$(yq eval ".packages.$category.brew[] // []" "$CONFIG_FILE" 2>/dev/null | grep -v "^[]$" | tr -d ' ')
         if [ -n "$brew_packages" ]; then
             while IFS= read -r package; do
                 if [ -n "$package" ]; then
@@ -157,7 +159,7 @@ count_total_packages() {
         
         # Get cask packages for this category
         local cask_packages
-        cask_packages=$(yq eval ".packages.$category.cask[] // []" "$CONFIG_FILE" 2>/dev/null | grep -v "^\[\]$" | tr -d ' ')
+        cask_packages=$(yq eval ".packages.$category.cask[] // []" "$CONFIG_FILE" 2>/dev/null | grep -v "^[]$" | tr -d ' ')
         if [ -n "$cask_packages" ]; then
             while IFS= read -r package; do
                 if [ -n "$package" ]; then
@@ -179,7 +181,7 @@ count_total_packages() {
 }
 
 # Initialize progress tracking
-init_progress() {
+INIT_PROGRESS() {
     TOTAL_PACKAGES=$(count_total_packages)
     # Progress tracking variables (used in progress functions)
     # shellcheck disable=SC2034 # COMPLETED_PACKAGES is used in progress tracking
@@ -198,7 +200,7 @@ init_progress() {
 }
 
 # Show final summary
-show_summary() {
+SHOW_SUMMARY() {
         local end_time
         end_time=$(date +%s)
     local total_duration=$((end_time - START_TIME))
@@ -282,26 +284,27 @@ while [[ $# -gt 0 ]]; do
         --dry-run)
             DRY_RUN=true
             shift
-            ;;
+            ;;i
         --only)
             ONLY_CATEGORY="$2"
             shift 2
-            ;;
+            ;;i
         --help)
             echo "Usage: $0 [--dry-run] [--only CATEGORY]"
             echo "Categories: core, frontend, backend, business"
             exit 0
-            ;;
+            ;;i
         *)
             log "ERROR" "Unknown option: $1"
             exit 1
-            ;;
+            ;;i
     esac
 done
 
 # Install Homebrew if not present
-install_homebrew() {
-    if command_exists brew; then
+INSTALL_HOMEBREW() {
+    if command_exists brew;
+ then
         log "INFO" "Homebrew already installed"
         return 0
     fi
@@ -318,11 +321,11 @@ install_homebrew() {
     # Add to PATH for Apple Silicon
     if [[ "$(uname -m)" == "arm64" ]]; then
         local brew_path="${HOMEBREW_APPLE_SILICON:-/opt/homebrew/bin/brew}"
-        echo "eval \"\$($brew_path shellenv)\"" >> ~/.zshrc
+        echo "eval \"$($brew_path shellenv)\"" >> ~/.zshrc
         eval "$($brew_path shellenv)"
     else
         local brew_path="${HOMEBREW_INTEL:-/usr/local/bin/brew}"
-        echo "eval \"\$($brew_path shellenv)\"" >> ~/.zshrc
+        echo "eval \"$($brew_path shellenv)\"" >> ~/.zshrc
         eval "$($brew_path shellenv)"
     fi
     
@@ -330,7 +333,7 @@ install_homebrew() {
 }
 
 # Install packages from YAML config
-install_packages() {
+INSTALL_PACKAGES() {
     local category="$1"
     
     if [ ! -f "$CONFIG_FILE" ]; then
@@ -338,7 +341,8 @@ install_packages() {
         return 1
     fi
     
-    if ! command_exists yq; then
+    if ! command_exists yq;
+ then
         log "ERROR" "yq is required but not installed"
         return 1
     fi
@@ -347,7 +351,7 @@ install_packages() {
     
     # Install brew packages
     local brew_packages
-    brew_packages=$(yq eval ".packages.$category.brew[] // []" "$CONFIG_FILE" 2>/dev/null | tr '\n' ' ' | sed 's/^\[\] *$//')
+    brew_packages=$(yq eval ".packages.$category.brew[] // []" "$CONFIG_FILE" 2>/dev/null | tr '\n' ' ' | sed 's/^[] *$//')
     
     if [ -n "$brew_packages" ] && [ "$brew_packages" != " " ] && [ "$brew_packages" != "[]" ]; then
         log "INFO" "Brew packages: $brew_packages"
@@ -359,12 +363,14 @@ install_packages() {
             local pids=()
             local max_jobs=$MAX_BREW_JOBS
             
-            for package in $brew_packages; do
+            for package in $brew_packages;
+ do
                 if [ -n "$package" ]; then
                     # Wait if we've hit the job limit
                     while [ ${#pids[@]} -ge "$max_jobs" ]; do
                         for i in "${!pids[@]}"; do
-                            if ! kill -0 "${pids[$i]}" 2>/dev/null; then
+                            if ! kill -0 "${pids[$i]}" 2>/dev/null;
+ then
                                 unset "pids[$i]"
                             fi
                         done
@@ -377,10 +383,12 @@ install_packages() {
                         package_start_time=$(date +%s)
                         local status=""
                         
-                        if brew list "$package" >/dev/null 2>&1; then
+                        if brew list "$package" >/dev/null 2>&1;
+ then
                             status="already_installed"
                         else
-                            if brew install "$package" >/dev/null 2>&1; then
+                            if brew install "$package" >/dev/null 2>&1;
+ then
                                 status="installed"
                             else
                                 status="failed"
@@ -405,25 +413,28 @@ install_packages() {
                         case $status in
                             "already_installed")
                                 # Check if package already recorded to avoid duplicates
-                                if ! grep -q "^skipped:$package$" "$SUMMARY_FILE" 2>/dev/null; then
+                                if ! grep -q "^skipped:$package$" "$SUMMARY_FILE" 2>/dev/null;
+ then
                                     echo "skipped:$package" >> "$SUMMARY_FILE"
                                 fi
                                 log "INFO" "$package: already installed and up to date ($(format_duration $package_duration))"
-                                ;;
+                                ;;i
                             "installed")
                                 # Check if package already recorded to avoid duplicates
-                                if ! grep -q "^installed:$package$" "$SUMMARY_FILE" 2>/dev/null; then
+                                if ! grep -q "^installed:$package$" "$SUMMARY_FILE" 2>/dev/null;
+ then
                                     echo "installed:$package" >> "$SUMMARY_FILE"
                                 fi
                                 log "SUCCESS" "$package installed ($(format_duration $package_duration))"
-                                ;;
+                                ;;i
                             "failed")
                                 # Check if package already recorded to avoid duplicates
-                                if ! grep -q "^errored:$package$" "$SUMMARY_FILE" 2>/dev/null; then
+                                if ! grep -q "^errored:$package$" "$SUMMARY_FILE" 2>/dev/null;
+ then
                                     echo "errored:$package" >> "$SUMMARY_FILE"
                                 fi
                                 log "WARN" "$package installation failed ($(format_duration $package_duration))"
-                                ;;
+                                ;;i
                         esac
                     ) &
                     pids+=($!)
@@ -439,7 +450,7 @@ install_packages() {
     
     # Install cask packages
     local cask_packages
-    cask_packages=$(yq eval ".packages.$category.cask[] // []" "$CONFIG_FILE" 2>/dev/null | tr '\n' ' ' | sed 's/^\[\] *$//')
+    cask_packages=$(yq eval ".packages.$category.cask[] // []" "$CONFIG_FILE" 2>/dev/null | tr '\n' ' ' | sed 's/^[] *$//')
     
     if [ -n "$cask_packages" ] && [ "$cask_packages" != " " ] && [ "$cask_packages" != "[]" ]; then
         log "INFO" "Cask packages: $cask_packages"
@@ -451,12 +462,14 @@ install_packages() {
             local cask_pids=()
             local max_cask_jobs=$MAX_CASK_JOBS
             
-            for package in $cask_packages; do
+            for package in $cask_packages;
+ do
                 if [ -n "$package" ]; then
                     # Wait if we've hit the job limit
                     while [ ${#cask_pids[@]} -ge "$max_cask_jobs" ]; do
                         for i in "${!cask_pids[@]}"; do
-                            if ! kill -0 "${cask_pids[$i]}" 2>/dev/null; then
+                            if ! kill -0 "${cask_pids[$i]}" 2>/dev/null;
+ then
                                 unset "cask_pids[$i]"
                             fi
                         done
@@ -469,10 +482,12 @@ install_packages() {
                         package_start_time=$(date +%s)
                         local status=""
                         
-                        if brew list --cask "$package" >/dev/null 2>&1; then
+                        if brew list --cask "$package" >/dev/null 2>&1;
+ then
                             status="already_installed"
                         else
-                            if brew install --cask "$package" >/dev/null 2>&1; then
+                            if brew install --cask "$package" >/dev/null 2>&1;
+ then
                                 status="installed"
                             else
                                 status="failed"
@@ -497,25 +512,28 @@ install_packages() {
                         case $status in
                             "already_installed")
                                 # Check if package already recorded to avoid duplicates
-                                if ! grep -q "^skipped:$package$" "$SUMMARY_FILE" 2>/dev/null; then
+                                if ! grep -q "^skipped:$package$" "$SUMMARY_FILE" 2>/dev/null;
+ then
                                     echo "skipped:$package" >> "$SUMMARY_FILE"
                                 fi
                                 log "INFO" "$package: already installed and up to date ($(format_duration $package_duration))"
-                                ;;
+                                ;;i
                             "installed")
                                 # Check if package already recorded to avoid duplicates
-                                if ! grep -q "^installed:$package$" "$SUMMARY_FILE" 2>/dev/null; then
+                                if ! grep -q "^installed:$package$" "$SUMMARY_FILE" 2>/dev/null;
+ then
                                     echo "installed:$package" >> "$SUMMARY_FILE"
                                 fi
                                 log "SUCCESS" "$package installed ($(format_duration $package_duration))"
-                                ;;
+                                ;;i
                             "failed")
                                 # Check if package already recorded to avoid duplicates
-                                if ! grep -q "^errored:$package$" "$SUMMARY_FILE" 2>/dev/null; then
+                                if ! grep -q "^errored:$package$" "$SUMMARY_FILE" 2>/dev/null;
+ then
                                     echo "errored:$package" >> "$SUMMARY_FILE"
                                 fi
                                 log "WARN" "$package installation failed ($(format_duration $package_duration))"
-                                ;;
+                                ;;i
                         esac
                     ) &
                     cask_pids+=($!)
@@ -530,16 +548,62 @@ install_packages() {
     fi
 }
 
+# Install pipx packages from YAML config
+INSTALL_PIPX_PACKAGES() {
+    if ! command_exists pipx;
+ then
+        log "WARN" "pipx not found, skipping installation of Python packages."
+        return 1
+    fi
+
+    if ! command_exists yq;
+ then
+        log "ERROR" "yq is required but not installed"
+        return 1
+    fi
+
+    log "INFO" "Installing pipx packages..."
+
+    local pipx_packages
+    pipx_packages=$(yq eval '.ai_python_packages[] // []' "$CONFIG_FILE" 2>/dev/null | tr '\n' ' ')
+
+    if [ -n "$pipx_packages" ]; then
+        log "INFO" "pipx packages: $pipx_packages"
+
+        if [ "$DRY_RUN" = "true" ]; then
+            log "INFO" "DRY RUN: Would install pipx packages: $pipx_packages"
+        else
+            for package in $pipx_packages;
+ do
+                if [ -n "$package" ]; then
+                    log "INFO" "Installing $package with pipx..."
+                    if pipx install "$package" >/dev/null 2>&1;
+ then
+                        log "SUCCESS" "$package installed"
+                    else
+                        log "WARN" "$package installation failed"
+                    fi
+                fi
+            done
+        fi
+    fi
+}
+
 # Main function
-main() {
+MAIN() {
     log "INFO" "Starting Environment Setup v1.0"
     log "INFO" "Detected $CPU_CORES CPU cores - using $MAX_BREW_JOBS brew jobs, $MAX_CASK_JOBS cask jobs"
+
+    # Bootstrap: Install Homebrew and yq if not present
+    install_homebrew
+    if ! command -v yq >/dev/null 2>&1;
+ then
+        log "INFO" "Bootstrapping: yq not found, installing..."
+        brew install yq
+    fi
     
     # Initialize progress tracking
     init_progress
-    
-    # Install Homebrew
-    install_homebrew
     
     # Install packages
     if [ -n "$ONLY_CATEGORY" ]; then
@@ -552,10 +616,25 @@ main() {
             install_packages "$category"
         done
     fi
+
+    # Install pipx packages
+    install_pipx_packages
     
     # Configure shell environment
     if [ "$DRY_RUN" = "false" ]; then
         log "INFO" "Configuring shell environment..."
+        
+        # Load shell configuration from YAML
+        SHELL_PLUGIN_MANAGER=$(yq eval '.shell.plugin_manager // "zinit"' "$CONFIG_FILE")
+        SHELL_THEME=$(yq eval '.shell.theme // "powerlevel10k"' "$CONFIG_FILE")
+        SHELL_THEME_STYLE=$(yq eval '.shell.theme_style // "rainbow"' "$CONFIG_FILE")
+        
+        # Load Oh My Zsh plugins if using oh-my-zsh
+        if [ "$SHELL_PLUGIN_MANAGER" = "oh-my-zsh" ]; then
+            SHELL_OH_MY_ZSH_PLUGINS=$(yq eval '.shell.oh_my_zsh_plugins[] // []' "$CONFIG_FILE" 2>/dev/null | tr -d ' ' | grep -v '^$' || echo "")
+            log "INFO" "Loaded Oh My Zsh plugins: ${SHELL_OH_MY_ZSH_PLUGINS:-none}"
+        fi
+        
         source "$SCRIPT_DIR/lib/shell.sh"
         configure_shell
         configure_terminals
@@ -636,9 +715,10 @@ main() {
     echo "   File exists: $([ -f "$markdown_file" ] && echo "Yes" || echo "No")"
     
     # Convert Markdown to HTML for proper browser rendering
-    if command -v pandoc >/dev/null 2>&1; then
+    if command -v pandoc >/dev/null 2>&1;
+ then
         echo "   Converting Markdown to HTML for browser rendering..."
-        local css_styles="${DOCS_CSS_STYLES:-body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif;max-width:1200px;margin:0 auto;padding:20px;line-height:1.6}table{border-collapse:collapse;width:100%;margin:20px 0}th,td{border:1px solid #ddd;padding:12px;text-align:left}th{background-color:#f2f2f2;font-weight:600}tr:nth-child(even){background-color:#f9f9f9}th[data-sortable=\"true\"]:hover{background-color:#e0e0e0;cursor:pointer}}"
+        local css_styles="${DOCS_CSS_STYLES:-body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif;max-width:1200px;margin:0 auto;padding:20px;line-height:1.6}table{border-collapse:collapse;width:100%;margin:20px 0}th,td{border:1px solid #ddd;padding:12px;text-align:left}th{background-color:#f2f2f2;font-weight:600}tr:nth-child(even){background-color:#f9f9f9}th[data-sortable="true"]:hover{background-color:#e0e0e0;cursor:pointer}}"
         pandoc "$markdown_file" -o "$html_file" --standalone --css=<(echo "$css_styles") 2>/dev/null
         HTML_FILE="$html_file"
     else
@@ -646,7 +726,8 @@ main() {
         HTML_FILE="$markdown_file"
     fi
     
-    if command -v open >/dev/null 2>&1; then
+    if command -v open >/dev/null 2>&1;
+ then
         # Open HTML file in default browser for interactive tables
         if [ -f "$HTML_FILE" ]; then
             echo "   Opening HTML version in default browser for interactive tables..."

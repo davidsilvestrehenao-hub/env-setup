@@ -299,6 +299,10 @@ load_config() {
     OPEN_WEBUI_DATABASE_URL=$(yq eval '.config.services.open_webui.database_url // "sqlite:///open-webui.db"' "$config_file")
     export OPEN_WEBUI_DATABASE_URL
     OPEN_WEBUI_JWT_SECRET=$(yq eval '.config.services.open_webui.jwt_secret // "your-secret-key-here"' "$config_file")
+    if [ "$OPEN_WEBUI_JWT_SECRET" = "your-secret-key-here" ]; then
+        log "INFO" "Generating new random secret for Open WebUI..."
+        OPEN_WEBUI_JWT_SECRET=$(openssl rand -hex 32)
+    fi
     export OPEN_WEBUI_JWT_SECRET
     
     POSTGRES_HOST=$(yq eval '.config.services.postgresql.host // "localhost"' "$config_file")

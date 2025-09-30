@@ -1,0 +1,141 @@
+# =============================================================================
+# Zsh Configuration - Working Version with Zoxide
+# =============================================================================
+
+# Oh My Zsh configuration
+export ZSH="$HOME/.oh-my-zsh"
+export ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Oh My Zsh plugins
+plugins=(
+    asdf
+    aws
+    azure
+    brew
+    bun
+    chezmoi
+    colorize
+    common-aliases
+    deno
+    docker
+    docker-compose
+    dotenv
+    eza
+    extract
+    fzf
+    gh
+    gcloud
+    git
+    git-auto-fetch
+    git-commit
+    git-escape-magic
+    git-extras
+    gitfast
+    github
+    git-prompt
+    helm
+    history
+    history-substring-search
+    kubectl
+    npm
+    nvm
+    pip
+    pm2
+    postgres
+    python
+    redis-cli
+    ssh
+    tmux
+    vscode
+    yarn
+    zsh-interactive-cd
+)
+
+# Load Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+
+# Path
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+# History
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE="$HOME/.zsh_history"
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt SHARE_HISTORY
+setopt INC_APPEND_HISTORY
+
+# =============================================================================
+# Modern Tools
+# =============================================================================
+
+# Zoxide (smarter cd) - Override Oh My Zsh z plugin
+eval "$(zoxide init zsh)"
+
+# FZF
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+
+# =============================================================================
+# Aliases
+# =============================================================================
+
+# File operations
+alias ll='eza -la --git --icons'
+alias la='eza -A --git --icons'
+alias l='eza -CF --git --icons'
+alias cat='bat --paging=never'
+alias grep='rg'
+alias find='fd'
+
+# Directory navigation
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# Reload
+alias reload='source ~/.zshrc'
+alias refresh='source ~/.zshrc'
+
+# =============================================================================
+# Functions - Remove conflicting aliases first
+# =============================================================================
+
+# Remove Oh My Zsh aliases that conflict with our functions
+unalias zshrc 2>/dev/null || true
+unalias vimrc 2>/dev/null || true
+unalias tmuxconf 2>/dev/null || true
+unalias gpr 2>/dev/null || true
+unalias gprd 2>/dev/null || true
+
+# Quick edit functions
+zshrc() { code ~/.zshrc }
+vimrc() { code ~/.vimrc }
+tmuxconf() { code ~/.tmux.conf }
+
+# GitHub PR functions
+gpr() { git push -u origin HEAD && gh pr create --title "$(git log -1 --pretty=%B)" --body "" }
+gprd() { git push -u origin HEAD && gh pr create --draft --title "$(git log -1 --pretty=%B)" --body "" }
+
+# Utility functions
+mkcd() { mkdir -p "$1" && cd "$1" }
+take() { mkdir -p "$1" && cd "$1" }
+fopen() { local file; file=$(find . -type f | fzf) && code "$file" }
+
+# =============================================================================
+# Powerlevel10k Configuration
+# =============================================================================
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Created by `pipx` on 2025-09-30 21:34:35
+export PATH="$PATH:/Users/david/.local/bin"

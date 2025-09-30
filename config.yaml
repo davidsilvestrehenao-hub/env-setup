@@ -214,6 +214,7 @@ config:
     - "gemini-cli" # Google Gemini CLI via npx @google/gemini-cli
   # Python AI packages (installed via pipx)
   ai_python_packages:
+    - "pygments"
     - "openai"
     - "huggingface-hub"
     - "jupyter"
@@ -228,7 +229,7 @@ config:
 
 # Shell & Terminal Configuration
 shell:
-  plugin_manager: "zinit"
+  plugin_manager: "oh-my-zsh"
   theme: "powerlevel10k"
   theme_style: "rainbow"
   
@@ -242,6 +243,51 @@ shell:
     - "hlissner/zsh-autopair"
     - "zsh-users/zsh-history-substring-search"
   
+  # Oh My Zsh plugins
+  oh_my_zsh_plugins:
+    - "asdf"                    # Version management
+    - "aws"                     # AWS CLI completion
+    - "azure"                   # Azure CLI completion
+    - "brew"                    # Homebrew aliases
+    - "bun"                     # Bun runtime
+    - "chezmoi"                 # Dotfiles management
+    - "colorize"                # File syntax highlighting
+    - "common-aliases"          # Common command aliases
+    - "deno"                    # Deno runtime
+    - "docker"                  # Docker aliases and completion
+    - "docker-compose"          # Docker Compose completion
+    - "dotenv"                  # Environment variable loading
+    - "eza"                     # Modern ls replacement
+    - "extract"                 # Archive extraction
+    - "fzf"                     # Fuzzy finder
+    - "gh"                      # GitHub CLI completion
+    - "gcloud"                  # Google Cloud CLI completion
+    - "git"                     # Git aliases and completion
+    - "git-auto-fetch"          # Automatic git fetching
+    - "git-commit"              # Git commit aliases
+    - "git-escape-magic"        # Git escape magic
+    - "git-extras"              # Git extras completion
+    - "gitfast"                 # Fast git completion
+    - "github"                  # GitHub integration
+    - "git-prompt"              # Git prompt information
+    - "helm"                    # Kubernetes package manager
+    - "history"                 # History management
+    - "history-substring-search" # History search
+    - "kubectl"                 # Kubernetes CLI completion
+    - "npm"                     # npm aliases and completion
+    - "nvm"                     # Node version manager
+    - "pip"                     # Python package manager
+    - "pm2"                     # Process manager
+    - "postgres"                # PostgreSQL aliases
+    - "python"                  # Python aliases
+    - "redis-cli"               # Redis CLI completion
+    - "ssh"                     # SSH completion
+    - "starship"                # Modern prompt
+    - "tmux"                    # Terminal multiplexer
+    - "vscode"                  # VS Code integration
+    - "yarn"                    # Yarn package manager
+    - "zsh-interactive-cd"      # Interactive directory navigation
+  
   # History management
   history:
     size: 10000
@@ -251,27 +297,31 @@ shell:
     ignore_space: true
     fuzzy_search: true
   
-  # Aliases
+  # Aliases - Only unique aliases not provided by Oh My Zsh plugins
   aliases:
-    - "ll=ls -la"
-    - "la=ls -A"
-    - "l=ls -CF"
-    - "gst=git status"
-    - "gco=git checkout"
-    - "gcb=git checkout -b"
-    - "gcm=git commit -m"
-    - "gps=git push"
-    - "gpl=git pull"
-    - "gdf=git diff"
-    - "glog=git log --oneline"
-    - "fzf-cd=cd $(find . -type d | fzf)"
-    - "fzf-history=history | fzf"
+    - "ll=eza -la --git --icons"
+    - "la=eza -A --git --icons"
+    - "l=eza -CF --git --icons"
+    - "cat=bat --paging=never"
+    - "grep=rg"
+    - "find=fd"
+    - "..=cd .."
+    - "...=cd ../.."
+    - "....=cd ../../.."
+    # Note: Git aliases (gst, gco, gcb, etc.) are provided by the 'git' plugin
+    # Note: Docker aliases (d, dc, dps, etc.) are provided by the 'docker' and 'docker-compose' plugins
+    # Note: Package manager aliases (ni, nu, ns, etc.) are provided by the 'npm' and 'yarn' plugins
+    # Note: FZF functions (fzf-cd, fzf-history) are provided by the 'fzf' plugin
   
-  # Functions
+  # Functions - Only unique functions not provided by Oh My Zsh plugins
   functions:
     - "mkcd() { mkdir -p \"$1\" && cd \"$1\"; }"
-    - "fzf-cd() { cd \"$(find . -type d | fzf)\"; }"
-    - "fzf-history() { history | fzf | sed 's/^[ ]*[0-9]*[ ]*//' | tr -d '\n' | pbcopy; }"
+    - "take() { mkdir -p \"$1\" && cd \"$1\"; }"
+    - "fopen() { local file; file=$(find . -type f | fzf) && code \"$file\"; }"
+    # Note: Git functions (gnew, gswitch, etc.) are provided by the 'git' plugin
+    # Note: Docker functions (drun, dbuild, etc.) are provided by the 'docker' plugin
+    # Note: FZF functions (fcd, fzf-history) are provided by the 'fzf' plugin
+    # Note: Extract function is provided by the 'extract' plugin
 
 # Tmux Configuration
 tmux:

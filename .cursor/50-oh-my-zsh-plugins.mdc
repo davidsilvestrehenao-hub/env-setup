@@ -1,0 +1,92 @@
+---
+alwaysApply: false
+---
+https://github.com/ohmyzsh/ohmyzsh/wiki/plugins
+
+# Oh My Zsh Plugins - Curated for Development Environment
+# Sorted alphabetically by plugin name
+
+asdf: adds integration with asdf, the extendable version manager, with support for Ruby, Node.js, Elixir, Erlang and more.
+
+aws: this plugin adds completion for the AWS CLI.
+
+azure: this plugin adds completion for the Azure CLI.
+
+brew: the plugin adds several aliases for common brew commands.
+
+bun: this plugin sets up completion for Bun.
+
+chezmoi: This plugin adds completion for chezmoi.
+
+colorize: with this plugin you can syntax-highlight file contents of over 300 supported languages and other text formats.
+
+common-aliases: this plugin creates helpful shortcut aliases for many commonly used commands.
+
+deno: this plugin sets up completion and aliases for Deno.
+
+docker: this plugin adds auto-completion and aliases for docker.
+
+docker-compose: this plugin provides completion for docker-compose as well as some aliases for frequent docker-compose commands.
+
+dotenv: automatically load your project ENV variables from .env file when you cd into project root directory.
+
+eza: this plugin adds completion and aliases for eza, a modern replacement for ls.
+
+extract: this plugin defines a function called extract that extracts the archive file you pass it, and it supports a wide variety of archive filetypes.
+
+fzf: this plugin adds completion and key bindings for fzf, a command-line fuzzy finder.
+
+gh: this plugin adds completion for the GitHub CLI.
+
+gcloud: this plugin adds completion for the Google Cloud CLI.
+
+git: the git plugin provides many aliases and a few useful functions.
+
+git-auto-fetch: automatically fetches all changes from all remotes while you are working in a git-initialized directory.
+
+git-commit: the git-commit plugin adds several git aliases for conventional commit messages.
+
+git-escape-magic: this plugin is copied from the original at https://github.com/knu/zsh-git-escape-magic. All credit for the functionality enabled by this plugin should go to @knu.
+
+git-extras: this plugin provides completion definitions for some of the commands defined by git-extras, which must already be installed.
+
+
+gitfast: this plugin adds completion for Git, using the zsh completion from git.git folks, which is much faster than the official one from zsh. A lot of zsh-specific features are not supported, like descriptions for every argument, but everything the bash completion has, this one does too (as it is using it behind the scenes). Not only is it faster, it should be more robust, and updated regularly to the latest git upstream version.
+
+github: this plugin supports working with GitHub from the command line. It provides a few things:
+
+git-prompt: A zsh prompt that displays information about the current git repository. In particular: the branch name, difference with remote branch, number of files staged or changed, etc.
+
+helm: this plugin adds completion for Helm, the Kubernetes package manager.
+
+history: provides a couple of convenient aliases for using the history command to examine your command line history.
+
+history-substring-search: this is a clean-room implementation of the [Fish shell][1]'s history search feature, where you can type in any part of any command from history and then press chosen keys, such as the UP and DOWN arrows, to cycle through matches.
+
+kubectl: this plugin adds completion for kubectl, the Kubernetes command-line tool.
+
+npm: the npm plugin provides completion as well as adding many useful aliases.
+
+nvm: this plugin adds autocompletions for nvm — a Node.js version manager. It also automatically sources nvm, so you don't need to do it manually in your .zshrc.
+
+pip: this plugin adds completion for pip, the Python package manager.
+
+pm2: the plugin adds several aliases and completions for common pm2 commands.
+
+postgres: this plugin adds some aliases for useful Postgres commands.
+
+python: the plugin adds several aliases for useful Python commands.
+
+redis-cli: this plugin adds redis-cli completion, based off of Homebrew completion.
+
+ssh: this plugin provides host completion based off of your ~/.ssh/config file, and adds some utility functions to work with SSH keys.
+
+starship: this plugin adds completion for starship, a minimal, fast shell prompt.
+
+tmux: this plugin adds completion and aliases for tmux, a terminal multiplexer.
+
+vscode: this plugin provides useful aliases to simplify the interaction between the command line and VS Code or VSCodium editor.
+
+yarn: this plugin adds completion for the Yarn package manager, as well as some aliases for common Yarn commands.
+
+zsh-interactive-cd: this plugin provides an interactive way to change directories in zsh using fzf.
